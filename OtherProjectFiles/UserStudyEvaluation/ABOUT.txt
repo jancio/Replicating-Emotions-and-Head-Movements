@@ -1,0 +1,318 @@
+#######################################################################################################
+# Author: Jan Ondras
+# Institution: University of Cambridge
+# Project: Replicating Human Facial Emotions and Head Movements on a Robot Avatar (Part II Project)
+# Duration: October 2016 - May 2017
+####################################################################################################### 
+# Files in this folder served for Emotion Classifier evaluation and whole system evaluation
+# Below is the summary what is for what task and what are the dependencies, 
+# please also refer to comments in specific files.
+#######################################################################################################
+
+Documents folder contains documents associated with user study, Consent form, Ethics Committee approval, ...
+
+!!!GROOP 1 here is GROUP 2 described in dissertation, and vice versa!!!
+
+Folders 'videos...' are empty, because they would exceed 15 MB limit.
+	videosHumans - original recordings of human participants (2 groups)
+	videosRobot - replicated vidoes based on recordings in videosHumans
+	videosMerged - (human-robot videos) created by putting human and robot videos side-by-side
+
+	video name involves true label (true emotion expressed by participant)
+		e.g. 03_2_1.webm means participant 3, emotion 2, for the first time (out of 2)
+			emotion 0 = neutral
+			emotion 1 = disgust
+			emotion 2 = happiness
+			emotion 3 = surprise
+
+#######################################################################################################
+EMOTION CLASSIFIER EVALUATION
+	- Emotion Classifier was evaluated on labelled humanVideos collected in controlled experiment
+
+To run Emotion Classifier on humanVideos use: generateTrueAndPredictedLabels.sh
+which generates pairs of (true, predicted) emotion IDs into folder ./trueAndPredictedLabels
+	For this you need to follow instructions given in generateTrueAndPredictedLabels.sh
+
+	Folder trueAndPredictedLabels contains pairs of (true, predicted) emotion IDs for both study groups (G1, G2) and wwith/without calibration provided.
+
+To evaluate the obtained results:
+evaluateEmotionClassifier.ipynb
+	evaluates classification accuracy comparing true and predicted labels (from folder ./trueAndPredictedLabels)
+
+#######################################################################################################
+WHOLE SYSTEM EVALUATION (WEB SURVEY)
+	
+First, every video (from humanVideos) collected in controlled experiment is passed to AUD and HPD to generate data (inferred emotions, measured head pose) for each frame. 
+This is done by running: outputFromDetectors.sh
+The generated data are stored in folder: detectorsOutOnHumanVideos
+
+Now generate information about human videos: video ID | DURATION (sec) | NUMBER OF FRAMES
+	by running getDurationAndFrameCont.sh
+	produces results into videoID_duration_frames_GX.dat
+
+Then, concatenate all the results into one file by running: concatenateVideoData.sh
+	creates AUD_data_Gx.dat and HPD_data_Gx.dat
+Then need to filter measured head pose using: filterHPdata.py
+	takes HPD_data_Gx.dat (videoID | frame number | angleYaw | anglePitch) and produces HPD_data_filteredGx.dat ( videoID | filteredAngleYaw | filteredAnglePitch | filteredVelocityYaw | filteredVelocityPitch)
+	(uses information about videos (durations, frame counts) from file videoID_duration_frames_GX.dat)
+
+Then using these data, replicate them on the robot and record the robot at the same time => robotVideos
+For this use: replicateOnRobotFromData.py
+	display emotions; filter and display head movements on robot; from generate data (from folder detectorsOutOnHumanVideos, produced from videosHumans)
+	(uses information about videos (durations, frame counts) from file videoID_duration_frames_GX.dat)
+	and it also creates video files: videosRobot (videos of robot when replicating)
+
+Finally, merge videosHumans and videosRobot into videosMerged - (human-robot videos) created by putting human and robot videos side-by-side
+They were then used in web surwey.
+	for this run: createHumanRobotVideos.sh
+
+EVALUATION OF WEB SURVEY RESULTS
+	- web survey associated files are in Survey folder
+	- human-robot videos of 10 best performing subjects were chosen for use in websurvey
+	=> 80 videos, split into 4 websurveys named: S1, S2, S3, S4
+		see surveyData/WebsurveyDivisionInfo.xlsx for how they were divided (randomly)
+	- we got 18 raters for each survey
+	- surveyData/surveyResults_Sx.csv contains ratings for each video
+		format: 1. column = videoID, next 18 columns are ratings from 18 raters
+		there are 2 rows for each videoID, this is because for each: first row = emotion replication rating, second row  = head pose replication rating
+
+	To evaluate results from Surveys S1,2,3,4 (from surveyData folder) and to generate datafiles(surveyData/ICC_*.csv) for ICC (intraclass-correlation) calculation 
+		use: evaluateSurvey.ipynb
+		plots histograms, and splits data separately for emotions and head pose - for ICC calculation (done in MATLAB)
+
+	ICC calculation (to evaluate inter-rater agreement in web survey)
+		calculate using MATLAB script ICC_Calculate.m (ICC2.m is downloaded module for ICC calculation)
+		uses datafiles (surveyData/ICC_*.csv)
+
+
+
+
+
+#######################################################################################################
+SUMMARY OF RESULTS FROM EMOTION CLASSIFIER EVALUATION
+#######################################################################################################
+
+GROUP 1:     01 - 12 (12 at College) (many have glasses G, and beard B, and it was not neutral reference emotion at the beginning !)
+
+	[[24  0  0  0]
+	 [21  1  2  0]
+	 [20  0  3  1]
+	 [20  0  1  3]]
+	             precision    recall  f1-score   support
+
+	    Neutral       0.28      1.00      0.44        24
+	    Disgust       1.00      0.04      0.08        24
+	  Happiness       0.50      0.12      0.20        24
+	   Surprise       0.75      0.12      0.21        24
+
+	avg / total       0.63      0.32      0.23        96
+
+	Accuracy: 
+	0.322916666667
+
+	Per participant
+
+	0.75				B
+	0.375				G
+	0.25				B
+	0.25				
+	0.25
+	0.25				G
+	0.25				G
+	0.25
+	0.25				G
+	0.5					G
+	0.25
+	0.25				
+######################################################################################
+GROUP 1 (WITH CALIBRATION)
+
+	[[24  0  0  0]
+	 [10  9  5  0]
+	 [ 3  1 19  1]
+	 [ 3  0  1 20]]
+	             precision    recall  f1-score   support
+
+	    Neutral       0.60      1.00      0.75        24
+	    Disgust       0.90      0.38      0.53        24
+	  Happiness       0.76      0.79      0.78        24
+	   Surprise       0.95      0.83      0.89        24
+
+	avg / total       0.80      0.75      0.74        96
+
+	Accuracy: 
+	0.75
+
+	Per participant
+	0.875				B
+	0.625				G
+	0.75				B
+	0.625
+	0.5
+	1.0					G
+	0.75				G
+	1.0		
+	0.75				G
+	0.5					G
+	1.0
+	0.625
+
+#################################################################################################################################
+
+GROUP 2: 13-28 (6 from CL, 10 from Fisherhouse)
+
+	[[31  0  1  0]
+	 [ 9 15  7  1]
+	 [ 8  3 21  0]
+	 [ 6  0  1 25]]
+	             precision    recall  f1-score   support
+
+	    Neutral       0.57      0.97      0.72        32
+	    Disgust       0.83      0.47      0.60        32
+	  Happiness       0.70      0.66      0.68        32
+	   Surprise       0.96      0.78      0.86        32
+
+	avg / total       0.77      0.72      0.72       128
+
+	Accuracy: 
+	0.71875
+	Per participant
+	0.875
+	0.75
+	0.25
+	0.75
+	0.75
+	0.75
+	0.875
+	1.0
+	0.625
+	0.5
+	0.625
+	0.75
+	0.75
+	0.625
+	0.75
+	0.875
+
+######################################################################################
+GROUP 2 (WITH CALIBRATION)
+
+	[[32  0  0  0]
+	 [16 12  4  0]
+	 [ 6  2 24  0]
+	 [ 6  0  0 26]]
+	             precision    recall  f1-score   support
+
+	    Neutral       0.53      1.00      0.70        32
+	    Disgust       0.86      0.38      0.52        32
+	  Happiness       0.86      0.75      0.80        32
+	   Surprise       1.00      0.81      0.90        32
+
+	avg / total       0.81      0.73      0.73       128
+
+	Accuracy: 
+	0.734375
+	Per participant
+	0.75
+	0.875
+	0.25
+	0.75
+	0.75
+	0.75
+	0.875
+	1.0
+	0.75
+	0.5
+	0.75
+	0.875
+	0.75
+	0.625
+	0.75
+	0.75
+
+
+####################################################################################################################################################
+### Total 28 per participant:
+
+GROUP 1
+	0.322916666667
+	0.75				(WITH CALIBRATION)
+GROUP 2
+	0.71875
+	0.734375			(WITH CALIBRATION)
+
+
+GROUP 1 (1-12)
+	0.75				
+	0.375
+	0.25
+	0.25
+	0.25
+	0.25
+	0.25
+	0.25
+	0.25
+	0.5
+	0.25
+	0.25
+- with calibration:
+	0.875				B
+	0.625				G
+	0.75				B
+	0.625
+	0.5
+	1.0					G
+	0.75				G
+	1.0		
+	0.75				G
+	0.5					G
+	1.0
+	0.625
+
+GROUP 2 (13-28)
+	0.875
+	0.75
+	0.25
+	0.75
+	0.75
+	0.75
+	0.875
+	1.0
+	0.625
+	0.5
+	0.625
+	0.75
+	0.75
+	0.625
+	0.75
+	0.875
+- with calibration:
+	0.75
+	0.875
+	0.25
+	0.75
+	0.75
+	0.75
+	0.875
+	1.0
+	0.75
+	0.5
+	0.75
+	0.875
+	0.75
+	0.625
+	0.75
+	0.75
+###################
+
+	- worst subjectIDs from Group2: excluded.
+	=> 10 subjects used for whole system evaluation in web survey: 13, 14, 16, 17, 18, 19, 20, 24, 25, 28
+
+	SHUFFLE VIDEOS IN EACH SURVEY: see file WebsurveyDivisionInfo.xlsl
+	(we have 8 videos per subject)
+
+	10 x 8 = 80 videos split into 4 surveys 
+
+
+
+####################################

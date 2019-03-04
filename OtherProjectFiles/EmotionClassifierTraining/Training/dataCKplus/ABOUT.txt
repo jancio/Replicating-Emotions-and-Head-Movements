@@ -1,0 +1,73 @@
+#######################################################################################################
+# Author: Jan Ondras
+# Institution: University of Cambridge
+# Project: Replicating Human Facial Emotions and Head Movements on a Robot Avatar (Part II Project)
+# Duration: October 2016 - May 2017
+####################################################################################################### 
+# Scripts used to create final training examples from labels and raw feature vectors generated from AUD
+# and to investigate the training data -> graphs
+#######################################################################################################
+
+processExamples.ipynb
+	all independent processing of data - by blocks (used ipython):
+	STATS OF ALL EXAMPLES,
+	STATS OF NUMBER OF FRAMES,
+	UNRECOGNISED AUs PROOF,
+	BALANCE CLASSES: #neutral from 266 to 83 = #happy, remove 183 randomly,
+	PLOT ACTIVITY OF EACH AU IN TIME (left padded) => infer reasonable window size,
+	GENERATE EXAMPLES from BALANCED data, skipping 7 UNRECOGNISED AUs (AVERAGE or CONCATENATE strategies)
+	REMOVE 4 confused CLASSES ['anger','contempt','fear','sadness'] FROM 8 balanced classes
+	* creates final training examples used
+
+
+mergeAllFeatures&Labels.py
+	in: featuresD.dat, labels.dat
+	out: exAll.dat, IDexAll.dat
+	match feature vectors with labels with or without subjectID: exAll.dat / IDexAll.dat
+	(see below for naming conventions)
+
+
+Folders: names are self-explanatory (features + labels -> used to create -> examples)
+
+	ABOUT FEATURES (folder features)
+		raw features from AUD (when running on CK+ database videos)
+		format: 	"SubjectID | Seq# | FPS | #Frames | array of (#Frames x 12 AUs) either 0 or 1"
+
+	ABOUT LABELS (folder labels)
+		format: 	"SubjectID | Seq# | labelID | label"
+		labels are 0-7 (8 classes of emotions)
+
+	ABOUT EXAMPLES (folder examples)
+		Naming conventions:
+			if name contains "ID" => subjectID is first column
+			number before "AU" => number of AUs considered (7)
+			if name contains "avg" / "concat" => strategy used
+			number after "W" => window size
+
+		exAll: 		(#frames x 12AUs) flattened | label
+		IDexAll: 	subjectID | (#frames x 12AUs) flattened | label
+		(593 of these)
+		Produced by: "mergeAllFeatures&Labels.py"
+
+		More concrete examples, generated from the above: (using processExamples.ipynb)
+
+		BALANCING:
+			BALANCE CLASSES: #neutral from 266 to 83 = #happy => exAllBalanced.dat
+			REMOVE classes (only 4)		(using balanced set)  => exAll4Classes.dat
+
+		Without subjectID, 
+		only 7 AUs, 
+		window size 1,2,3,4,5,6
+		CONCATENATED => shape = (W x 7)
+			"ex7AUconcatW1.dat"
+			(W x 7) flattened | label
+
+		Without subjectID, 
+		only 7 AUs, 
+		window size 1,2,3,4,5,6
+		AVERAGED within each AU => shape = 7
+			"ex7AUavgW1.dat"
+			(1 x 7) | lab
+
+		After changing #classes (added number 4 after "AU"):
+			"ex7AU4avgW1.dat"

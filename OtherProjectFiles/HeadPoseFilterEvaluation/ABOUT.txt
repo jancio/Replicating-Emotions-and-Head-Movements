@@ -1,0 +1,18 @@
+#######################################################################################################
+# Author: Jan Ondras
+# Institution: University of Cambridge
+# Project: Replicating Human Facial Emotions and Head Movements on a Robot Avatar (Part II Project)
+# Duration: October 2016 - May 2017
+####################################################################################################### 
+
+estimateQ&R.ipynb
+	to estimate measurement and process noises of Kalman filter
+
+compareWithTruthUPNA.ipynb
+	to evaluate HPF, on 20% of data from UPNA database
+
+compareWithFilterPy.py
+	compare my Kalman filter implementation with FilterPy
+
+offlineTrackUPNAdb.sh
+	Run HPD on data from UPNA DB to log measured head poses

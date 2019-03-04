@@ -1,0 +1,8 @@
+#######################################################################################################
+# Author: Jan Ondras
+# Institution: University of Cambridge
+# Project: Replicating Human Facial Emotions and Head Movements on a Robot Avatar (Part II Project)
+# Duration: October 2016 - May 2017
+####################################################################################################### 
+
+Test data for verifying Kalman filter class module.

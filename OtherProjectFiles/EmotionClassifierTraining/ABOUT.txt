@@ -1,0 +1,46 @@
+#######################################################################################################
+# Author: Jan Ondras
+# Institution: University of Cambridge
+# Project: Replicating Human Facial Emotions and Head Movements on a Robot Avatar (Part II Project)
+# Duration: October 2016 - May 2017
+####################################################################################################### 
+# Files in this folder served for Emotion Classifier training and crossvalidation
+# 
+# Below is the summary what is for what task and what are the dependencies, 
+# please also refer to comments in specific files.
+#######################################################################################################
+
+
+The shell scripts (generateFeatures*.sh) in this folder were used to create detailed raw features from the whole recording from specified database (CK+ / GEMEP=FERA2011)
+	they call AUD but it it necessary to use AURecogniser.cpp, AURecogniser.hpp and livefeatures.cpp given here instead of those (with same name) given in ./EmotionReplication/ used for real-time replication. 
+	For each video we get one row in resultant file: "SubjectID | Seq# | FPS | #Frames | array of (#Frames x 12 AUs) [either 0 or 1]"
+	In livefeatures.cpp - specify path where to save features.
+
+CK+ database was used for training only, GEMEP only for testing - but it gave bad results, it does not use the same set of emotions!
+The trained model was tested on in-house database collected in controlled experiment (see user study)
+
+In Training folder:
+	Initially, 8 classes of emotions were tried, for these:
+		crossvalidation & hyperparameter tuning & producing plots
+			mlpCVfor8balancedClassesMultiInit.ipynb
+				1.) plot heatmap of train/test accuracy(&std) against window W and hidden layer size (hls) => 4 heatmaps
+				=> tune architecture and feature representation
+				2.) for chosen W and hls, crossvalidate regularisation alpha
+				3.) plot confusion matrix sum over 5 cv folds
+	Then for 4 final classes of emotions ['neutral', 'disgust', 'happiness', 'surprise']:
+		analogous to above, crossvalidation & hyperparameter tuning & producing plots - for 2 different strategies AVG/CONCAT (how features were created)
+			mlpCVfor4balancedClassesMultiInitAvg.ipynb
+			mlpCVfor4balancedClassesMultiInitConcat.ipynb
+	
+	finalTrain&GenerateWeights.ipynb
+		to do final training on whole CK+ database using hyperparameters (hls=4, W=5, alpha=1e-5; and strategy AVG) tuned/compared in crossvalidation process
+		this uses final 4 classess of emotions 
+			final trained weights used for real-time classification are in weights.npz
+
+	testing the trained model on much more challenging GEMEP database with spontaneous emotions 
+		testOnGEMEP.ipynb
+
+In Training/dataCKplus folder:
+	see ABOUT.txt there
+	there are scripts that were used to create final training examples from labels and raw feature vectors generated from AUD
+	and to investigate the training data -> graphs

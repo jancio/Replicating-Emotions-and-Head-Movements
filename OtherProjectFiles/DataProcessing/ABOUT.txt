@@ -1,0 +1,11 @@
+#######################################################################################################
+# Author: Jan Ondras
+# Institution: University of Cambridge
+# Project: Replicating Human Facial Emotions and Head Movements on a Robot Avatar (Part II Project)
+# Duration: October 2016 - May 2017
+####################################################################################################### 
+
+Scripts in this directory were used to extract data from databases: 
+	CK+, (Emotion Classifier training)
+	FERA2011/GEMEP, (Emotion Classifier training - but not good results)
+	UPNA (Head Pose Filter evaluation, and process noise estimation for Kalman filter)
