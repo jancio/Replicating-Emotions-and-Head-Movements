@@ -28,3 +28,13 @@ Jan Ondras, Oya Celiktutan, Evangelos Sariyanidi, and Hatice Gunes.<br>
 [Automatic replication of teleoperator head movements and facial expressions on a humanoid robot.](https://ieeexplore.ieee.org/abstract/document/8172386) <br>
 In 26th IEEE International Symposium on Robot and Human Interactive Communication (RO-MAN), 2017. <br>
 *Oral presentation.*
+
+### Citation
+
+	@article{Ondras2017AutomaticRO,
+	  title={Automatic replication of teleoperator head movements and facial expressions on a humanoid robot},
+	  author={Jan Ondras and Oya Çeliktutan and Evangelos Sariyanidi and Hatice Gunes},
+	  journal={2017 26th IEEE International Symposium on Robot and Human Interactive Communication (RO-MAN)},
+	  year={2017},
+	  pages={745-750}
+	}
