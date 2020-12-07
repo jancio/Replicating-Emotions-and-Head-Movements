@@ -1,4 +1,4 @@
-# Replicating human facial emotions and head movements on a robot avatar
+# Replicating Human Facial Emotions and Head Movements on a Robot Avatar
 
 In this work, I propose a novel teleoperation system that combines the
 replication of facial expressions of emotions (neutral, disgust, happiness, and surprise) and head movements on the fly on
@@ -22,12 +22,12 @@ teleoperation system can successfully communicate emotions
 and head movements, resulting in a high agreement among
 the external observers (ICCE = 0.91, ICCHP = 0.72).
 
-This project resulted in the following **conference paper**:
+This project was part of my [BA Thesis](https://github.com/jancio/Replicating-Emotions-and-Head-Movements/blob/master/Thesis/JanOndras_BA_Thesis_2017.pdf). It resulted in a **conference paper**:
 
-Jan Ondras, Oya Celiktutan, Evangelos Sariyanidi, and Hatice Gunes.<br>
-[Automatic replication of teleoperator head movements and facial expressions on a humanoid robot.](https://ieeexplore.ieee.org/abstract/document/8172386) <br>
-In 26th IEEE International Symposium on Robot and Human Interactive Communication (RO-MAN), 2017. <br>
-*Oral presentation.*
+> **Jan Ondras**, Oya Celiktutan, Evangelos Sariyanidi, and Hatice Gunes<br>
+> [*Automatic replication of teleoperator head movements and facial expressions on a humanoid robot*](https://ieeexplore.ieee.org/abstract/document/8172386) <br>
+> In 26th IEEE International Symposium on Robot and Human Interactive Communication (RO-MAN), 2017<br>
+> Oral presentation
 
 ### Citation
 
